@@ -50,8 +50,17 @@ public class Employee {
             public void actionPerformed(ActionEvent event) {
                 firstName = firstNameField.getText();
                 lastName = lastNameField.getText();
-                employeeName = new Name(firstName, lastName);
-                firstLastFrame.dispose();
+                if (firstName.equals("") || lastName.equals("")) {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "First name or Last name not enter",
+                        "Error message",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                } else {
+                    employeeName = new Name(firstName, lastName);
+                    firstLastFrame.dispose();
+                }
             }
         });
 
@@ -62,6 +71,8 @@ public class Employee {
         firstLastFrame.add(new JLabel(""));
         firstLastFrame.add(submit);
 
+        firstLastFrame.pack();
+        firstLastFrame.setLocationRelativeTo(null);
         firstLastFrame.setVisible(true);
     }
 

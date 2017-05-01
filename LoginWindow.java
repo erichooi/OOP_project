@@ -56,6 +56,8 @@ public class LoginWindow {
 
         loginFrame.add(headerLabel, BorderLayout.PAGE_START);
         loginFrame.add(loginPanel, BorderLayout.CENTER);
+
+        loginFrame.setLocationRelativeTo(null);
         loginFrame.setVisible(true);
     }
 
@@ -100,6 +102,7 @@ public class LoginWindow {
             informationFrame.add(new JLabel(""));
             informationFrame.add(submit);
 
+            informationFrame.setLocationRelativeTo(null);
             informationFrame.setVisible(true);
         }
     }

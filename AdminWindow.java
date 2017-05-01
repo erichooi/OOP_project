@@ -5,6 +5,11 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Vector;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 
 public class AdminWindow {
     private JFrame adminFrame;
@@ -25,7 +30,7 @@ public class AdminWindow {
 
     public AdminWindow(ArrayList<Employee> employees, ArrayList<Department> departments) {
         adminFrame = new JFrame("Admin");
-        adminFrame.setSize(250, 300);
+        adminFrame.setSize(220, 250);
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setLayout(new BorderLayout());
 
@@ -65,6 +70,8 @@ public class AdminWindow {
                 }
 
                 employeeChoiceList.add(panel);
+
+                employeeChoiceList.setLocationRelativeTo(null);
                 employeeChoiceList.setVisible(true);
             }
         });
@@ -92,6 +99,8 @@ public class AdminWindow {
                 }
 
                 employeeChoiceList.add(panel);
+
+                employeeChoiceList.setLocationRelativeTo(null);
                 employeeChoiceList.setVisible(true);
             }
         });
@@ -119,6 +128,8 @@ public class AdminWindow {
                 }
 
                 employeeChoiceList.add(panel);
+
+                employeeChoiceList.setLocationRelativeTo(null);
                 employeeChoiceList.setVisible(true);
             }
         });
@@ -130,17 +141,19 @@ public class AdminWindow {
                 String departmentName = JOptionPane.showInputDialog(
                     null,
                     "Enter the new department's name",
-                    "New Department"
+                    "Department's Name"
                 );
-                Department department = new Department(departmentName);
-                departments.add(department);
+                if (!departmentName.equals("")) {
+                    Department department = new Department(departmentName);
+                    departments.add(department);
+                }
             }
         });
         rDepartmentButton = new JButton("Show Department");
         rDepartmentButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 JFrame DepartmentList = new JFrame("Show Department");
-                DepartmentList.setSize(300, 200);
+                DepartmentList.setSize(400, 200);
                 JPanel panel = new JPanel();
                 panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -150,7 +163,7 @@ public class AdminWindow {
                     departmentButton.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent event) {
                             choice = Integer.parseInt(event.getActionCommand());
-                            EmployeeInformationShow employeeInformationInput = new EmployeeInformationShow(employees.get(choice));
+                            DepartmentInformationShow departmentInformationShow = new DepartmentInformationShow(departments.get(choice));
                             DepartmentList.dispose();
                         }
                     });
@@ -160,11 +173,93 @@ public class AdminWindow {
                 }
 
                 DepartmentList.add(panel);
+
+                DepartmentList.setLocationRelativeTo(null);
                 DepartmentList.setVisible(true);
             }
         });
         uDepartmentButton = new JButton("Update Department");
+        uDepartmentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JFrame DepartmentList = new JFrame("Update Department");
+                DepartmentList.setSize(400, 200);
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+                for (int i = 0; i < departments.size(); i++) {
+                    JButton departmentButton = new JButton(departments.get(i).getDepartmentName());
+                    departmentButton.setActionCommand(Integer.toString(i));
+                    departmentButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent event) {
+                            choice = Integer.parseInt(event.getActionCommand());
+
+                            Department choosenDepartment = departments.get(choice);
+
+                            String[] employeeNames = new String[employees.size()];
+                            for (int i = 0; i < employees.size(); i++) {
+                                employeeNames[i] = employees.get(i).getEmployeeName().toString();
+                            }
+                            String employee = (String) JOptionPane.showInputDialog(
+                                null,
+                                "Choose employee to add",
+                                "Add employee (" + choosenDepartment.getDepartmentName() + ")",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                employeeNames,
+                                employeeNames[0]
+                            );
+
+                            for (int i = 0; i < employees.size(); i++) {
+                                if (employee.equals(employees.get(i).getEmployeeName().toString())) {
+                                    choice = i;
+                                }
+                            }
+
+                            choosenDepartment.addEmployee(employees.get(choice));
+
+                            DepartmentList.dispose();
+                        }
+                    });
+                    departmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    panel.add(departmentButton);
+                }
+
+                DepartmentList.add(panel);
+
+                DepartmentList.setLocationRelativeTo(null);
+                DepartmentList.setVisible(true);
+            }
+        });
         dDepartmentButton = new JButton("Delete Department");
+        dDepartmentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JFrame DepartmentList = new JFrame("Delete Department");
+                DepartmentList.setSize(400, 200);
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+                for (int i = 0; i < departments.size(); i++) {
+                    JButton departmentButton = new JButton(departments.get(i).getDepartmentName());
+                    departmentButton.setActionCommand(Integer.toString(i));
+                    departmentButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent event) {
+                            choice = Integer.parseInt(event.getActionCommand());
+                            departments.remove(choice);
+                            DepartmentList.dispose();
+                        }
+                    });
+                    departmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    panel.add(departmentButton);
+                }
+
+                DepartmentList.add(panel);
+
+                DepartmentList.setLocationRelativeTo(null);
+                DepartmentList.setVisible(true);
+            }
+        });
 
         cEmployeeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         rEmployeeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -189,6 +284,7 @@ public class AdminWindow {
         adminFrame.add(headerLabel, BorderLayout.PAGE_START);
         adminFrame.add(adminPanel, BorderLayout.CENTER);
 
+        adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
     }
 
@@ -244,6 +340,7 @@ public class AdminWindow {
             employeeInformationFrame.add(new JLabel(""));
             employeeInformationFrame.add(submitButton);
 
+            employeeInformationFrame.setLocationRelativeTo(null);
             employeeInformationFrame.setVisible(true);
         }
     }
@@ -288,7 +385,94 @@ public class AdminWindow {
             employeeInformationFrame.add(new JLabel(""));
             employeeInformationFrame.add(submitButton);
 
+            employeeInformationFrame.setLocationRelativeTo(null);
             employeeInformationFrame.setVisible(true);
+        }
+    }
+
+    private class DepartmentInformationShow {
+        public DepartmentInformationShow(Department department) {
+            JFrame departmentInformationFrame = new JFrame("Department");
+            departmentInformationFrame.setSize(500, 300);
+            GridBagConstraints gbc = new GridBagConstraints();
+            departmentInformationFrame.setLayout(new GridBagLayout());
+
+            Vector<String> employeeName = new Vector<String>();
+            for (Employee e : department.getEmployees()) {
+                employeeName.add(e.getEmployeeName().toString());
+            }
+
+            JScrollPane employeeScrollPane = new JScrollPane();
+            JList employeeList = new JList(employeeName);
+            employeeScrollPane.setViewportView(employeeList);
+
+            JButton submitButton = new JButton("OK");
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    departmentInformationFrame.dispose();
+                }
+            });
+
+            JPanel panel = new JPanel();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            gbc.weightx = 0.1;
+            gbc.weighty = 0.1;
+            gbc.anchor = GridBagConstraints.WEST;
+            departmentInformationFrame.add(new JLabel("ID"), gbc);
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel(Integer.toString(department.getDepartmentID())), gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel("Department's name"), gbc);
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel(department.getDepartmentName()), gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel("Total Employee"), gbc);
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel(Integer.toString(department.getTotalEmployee())), gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 3;
+            departmentInformationFrame.add(new JLabel("Employee"), gbc);
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 3;
+            gbc.fill = GridBagConstraints.VERTICAL;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            departmentInformationFrame.add(employeeScrollPane, gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 6;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            departmentInformationFrame.add(new JLabel(""), gbc);
+            gbc.gridx = 1;
+            gbc.gridy = 6;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            gbc.anchor = GridBagConstraints.CENTER;
+            departmentInformationFrame.add(submitButton, gbc);
+
+            departmentInformationFrame.setLocationRelativeTo(null);
+            departmentInformationFrame.setVisible(true);
         }
     }
 }

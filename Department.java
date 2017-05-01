@@ -1,18 +1,18 @@
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class Department {
     private int departmentID;
     private String departmentName;
-    private int totalEmployee;
     private ArrayList<Employee> employees;
-    private int employeeNum;
+    private int totalEmployee;
     public static int dID = 1;
 
     public Department(String departmentName) {
         this.departmentName = departmentName;
         this.departmentID = dID;
         this.employees = new ArrayList<Employee>(10); // a department can only accommodate 10 employee
-        employeeNum = 0;
+        totalEmployee = 0;
         dID++;
     }
 
@@ -40,12 +40,27 @@ public class Department {
         return totalEmployee;
     }
 
+    public ArrayList<Employee> getEmployees() {
+        return this.employees;
+    }
+
     public void addEmployee(Employee employee) {
-        if (this.employeeNum < 10) {
+        boolean duplicate = false;
+        for (Employee e : this.employees) {
+            if (e.getEmployeeID() == employee.getEmployeeID()) {
+                duplicate = true;
+            }
+        }
+        if (this.totalEmployee < 10 && duplicate == false) {
             this.employees.add(employee);
-            this.employeeNum++;
+            this.totalEmployee++;
         } else {
-            System.out.println("Department exceed the maximum allow employee");
+            JOptionPane.showMessageDialog(
+                null,
+                "Failed to add\nMaybe due to:\n\t1. Exceed max number\n\t2. Already exist",
+                "Error Message",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -58,7 +73,7 @@ public class Department {
         }
         if (exist) {
             this.employees.remove(employee);
-            this.employeeNum--;
+            this.totalEmployee--;
         }
     }
 }
